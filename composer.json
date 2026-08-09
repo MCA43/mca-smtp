@@ -1,0 +1,55 @@
+{
+    "name": "mca/smtp",
+    "description": "Panel SMTP settings with Laravel mail config apply and test mail for Laravel.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["laravel", "mca", "smtp", "mail"],
+    "require": {
+        "php": "^8.3",
+        "laravel/framework": "^13.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^11.0",
+        "phpunit/phpunit": "^12.0"
+    },
+    "suggest": {
+        "mca/permission": "Root access middleware for SMTP admin UI",
+        "mca/hub": "MCA package hub integration"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mca\\Smtp\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mca\\Smtp\\SmtpServiceProvider"
+            ]
+        },
+        "mca": {
+            "slug": "smtp",
+            "title": {
+                "en": "Email / SMTP",
+                "tr": "E-posta / SMTP"
+            },
+            "description": {
+                "en": "SMTP panel settings, Laravel mail apply and test email.",
+                "tr": "Panel SMTP ayarları, Laravel mail uygulama ve test e-postası."
+            },
+            "route": "mca.smtp.index",
+            "github": "https://github.com/MCA43/mca-smtp",
+            "icon": "mail",
+            "order": 25,
+            "frameworks": ["laravel13"]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
