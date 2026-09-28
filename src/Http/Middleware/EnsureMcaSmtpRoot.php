@@ -4,6 +4,7 @@ namespace Mca\Smtp\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Mca\Permission\Services\PackageAccessService;
 use Mca\Permission\Services\PermissionService;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,12 +18,26 @@ class EnsureMcaSmtpRoot
             abort(403);
         }
 
+        $forbidden = function_exists('mca_smtp_t') ? mca_smtp_t('errors.root_only') : 'Bu MCA paketi için yetkiniz yok.';
+
+        if (class_exists(PackageAccessService::class)
+            && is_array(config('permission.packages.smtp'))) {
+            $packages = app(PackageAccessService::class);
+            $ability = $packages->abilityForRequest($request);
+
+            if ($packages->allows($user, 'smtp', $ability)) {
+                return $next($request);
+            }
+
+            abort(403, $forbidden);
+        }
+
         if (config('smtp.access.use_permission_root', true) && class_exists(PermissionService::class)) {
             if (app(PermissionService::class)->isRoot($user)) {
                 return $next($request);
             }
 
-            abort(403, mca_smtp_t('errors.root_only'));
+            abort(403, $forbidden);
         }
 
         $column = (string) config('smtp.access.role_column', 'role_id');
@@ -37,6 +52,6 @@ class EnsureMcaSmtpRoot
             return $next($request);
         }
 
-        abort(403, mca_smtp_t('errors.root_only'));
+        abort(403, $forbidden);
     }
 }
